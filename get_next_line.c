@@ -92,6 +92,46 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return ((char *)sub);
 }
 
+void xtraFunction(char **storage, char **buffer, char **result)
+{
+	
+	
+	// if(ft_strchr(storage, '\n'))
+	// {
+		// -------------- Rellenar result -------------
+		int i = 0;
+		while (*storage[i] != '\n')
+			i++;
+		i++;
+		*(result) = (char *)malloc((i + 1) * sizeof(char));
+		int j = 0;
+		while(j < i)
+		{
+			result[j] = storage[j];
+			j++;
+		}
+		*(result[j]) = '\0';
+		// ---------------------------------------------
+		// ----- Rellenar storage con lo sobrante ------
+		while(*(buffer[i]) != '\0')
+			i++;
+		
+		storage = 0;
+		int ft_len = ft_strlen(*(buffer));
+
+		int first = 0;
+		while(*(buffer[first]) != '\n')
+			first++;
+		first++;
+		*(storage) = ft_substr(*(buffer), first, ft_len - 1);
+		ft_len = 3;
+	// }
+	// else //no se ha leido lo suficiente y hace falta volver a hacer read
+	// {
+		
+	// }
+}
+
 char *get_next_line(int fd)
 {
     static char *storage = NULL;
@@ -99,42 +139,49 @@ char *get_next_line(int fd)
 	char *result;
     buffer = (char*)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 
-    while(!ft_strchr(buffer, '\n'))
-    {
-        //solo read si no hay /n -> si no hay \n es que no hay proxima linea
+	//cuando queremos leer?????
+	while(!ft_strchr(buffer, '\n'))
+	{
         read(fd, buffer, BUFFER_SIZE);
-
         // -------------- Rellenar store -------------
         storage = ft_strjoin(storage, buffer);
         // -------------------------------------------
-    }
-	if(ft_strchr(storage, '\n'))
-	{
-		// -------------- Rellenar result -------------
-		int i = 0;
-		while (buffer[i] != '\n')
-			i++;
-		i++;
-		result = (char *)malloc((i + 1) * sizeof(char));
-		int j = 0;
-		while(j < i)
+		if(ft_strchr(storage, '\n'))
 		{
-			result[j] = buffer[j];
-			j++;
+			xtraFunction(&storage, &buffer, &result);
 		}
-		result[j] = '\0';
-		// ---------------------------------------------
-		// ----- Rellenar storage con lo sobrante ------
-		while(buffer[i] != '\0')
-			i++;
-		storage = 0;
-		int ft_len = i - j;
-		storage = ft_substr(buffer, i, ft_len);
 	}
+	// if(ft_strchr(storage, '\n'))
+	// {
+	// 	// -------------- Rellenar result -------------
+	// 	int i = 0;
+	// 	while (buffer[i] != '\n')
+	// 		i++;
+	// 	i++;
+	// 	result = (char *)malloc((i + 1) * sizeof(char));
+	// 	int j = 0;
+	// 	while(j < i)
+	// 	{
+	// 		result[j] = buffer[j];
+	// 		j++;
+	// 	}
+	// 	result[j] = '\0';
+	// 	// ---------------------------------------------
+	// 	// ----- Rellenar storage con lo sobrante ------
+	// 	while(buffer[i] != '\0')
+	// 		i++;
+	// 	storage = 0;
+	// 	int ft_len = i - j;
+	// 	storage = ft_substr(buffer, i, ft_len);
+	// }
+	// else //no se ha leido lo suficiente y hace falta volver a hacer read
+
+
     // if(read == -1)
         //error liberar buffer y todo lo usado
     return (result);
 }
+
 
 int main(void)
 {
