@@ -100,14 +100,14 @@ void xtraFunction(char **storage, char **buffer, char **result)
 	// {
 		// -------------- Rellenar result -------------
 		int i = 0;
-		while (*storage[i] != '\n')
+		while ((*storage)[i] != '\n')
 			i++;
 		i++;
 		*(result) = (char *)malloc((i + 1) * sizeof(char));
 		int j = 0;
 		while(j < i)
 		{
-			result[j] = storage[j];
+			(*result)[j] = (*storage)[j];
 			j++;
 		}
 		*(result[j]) = '\0';
@@ -116,7 +116,7 @@ void xtraFunction(char **storage, char **buffer, char **result)
 		while(*(buffer[i]) != '\0')
 			i++;
 		
-		storage = 0;
+		(*storage) = 0;
 		int ft_len = ft_strlen(*(buffer));
 
 		int first = 0;
