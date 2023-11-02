@@ -110,17 +110,17 @@ void xtraFunction(char **storage, char **buffer, char **result)
 			(*result)[j] = (*storage)[j];
 			j++;
 		}
-		*(result[j]) = '\0';
+		(*result)[j] = '\0';
 		// ---------------------------------------------
 		// ----- Rellenar storage con lo sobrante ------
-		while(*(buffer[i]) != '\0')
+		while((*buffer)[i] != '\0')
 			i++;
 		
 		(*storage) = 0;
 		int ft_len = ft_strlen(*(buffer));
 
 		int first = 0;
-		while(*(buffer[first]) != '\n')
+		while((*buffer)[first] != '\n')
 			first++;
 		first++;
 		*(storage) = ft_substr(*(buffer), first, ft_len - 1);
@@ -140,7 +140,7 @@ char *get_next_line(int fd)
     buffer = (char*)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 
 	//cuando queremos leer?????
-	while(!ft_strchr(buffer, '\n'))
+	while(!ft_strchr(buffer, '\n')) 
 	{
         read(fd, buffer, BUFFER_SIZE);
         // -------------- Rellenar store -------------
@@ -149,6 +149,7 @@ char *get_next_line(int fd)
 		if(ft_strchr(storage, '\n'))
 		{
 			xtraFunction(&storage, &buffer, &result);
+			printf("%s\n", result);
 		}
 	}
 	// if(ft_strchr(storage, '\n'))
@@ -187,6 +188,12 @@ int main(void)
 {
     char path[] = "file.txt";
     int fd = open(path, O_RDONLY);
-    // printf("%s", get_next_line(fd));
-    get_next_line(fd);
+    char	*str;
+	// printf("%s", get_next_line(fd));
+    str = get_next_line(fd);
+	printf("%s\n", str);
+	free(str);
+	//get_next_line(fd);
+	//printf("%s\n", str);
+	//free(str);
 }
