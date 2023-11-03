@@ -105,7 +105,7 @@ void xtraFunction(char **storage, char **buffer, char **result)
 		i++;
 		*(result) = (char *)malloc((i + 1) * sizeof(char));
 		int j = 0;
-		while(j < i)
+		while (j < i)
 		{
 			(*result)[j] = (*storage)[j];
 			j++;
@@ -113,18 +113,23 @@ void xtraFunction(char **storage, char **buffer, char **result)
 		(*result)[j] = '\0';
 		// ---------------------------------------------
 		// ----- Rellenar storage con lo sobrante ------
-		while((*buffer)[i] != '\0')
+		// aqui result rellenado entero
+		// no necesitamos storage a no ser que haya algo en buffer despues del \n
+		
+		i = 0;
+		if ((*buffer)[i] != '\n' || (*buffer)[i] != '\0')
+		{
+			while ((*buffer)[i] != '\n' || (*buffer)[i] != '\n')
+				i++;
 			i++;
+		}
 		
 		(*storage) = 0;
-		int ft_len = ft_strlen(*(buffer));
+		int buff_len = ft_strlen(*(buffer));
 
-		int first = 0;
-		while((*buffer)[first] != '\n')
-			first++;
-		first++;
-		*(storage) = ft_substr(*(buffer), first, ft_len - 1);
-		ft_len = 3;
+		//caso en que hay mas cosas despues del buffer
+		if (buff_len > i)
+			*(storage) = ft_substr(*(buffer), i, buff_len - 1);
 	// }
 	// else //no se ha leido lo suficiente y hace falta volver a hacer read
 	// {
@@ -137,19 +142,21 @@ char *get_next_line(int fd)
     static char *storage = NULL;
     char *buffer;
 	char *result;
+	size_t bytes_read = 0;
     buffer = (char*)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 
 	//cuando queremos leer?????
 	while(!ft_strchr(buffer, '\n')) 
 	{
-        read(fd, buffer, BUFFER_SIZE);
+        bytes_read = read(fd, buffer, BUFFER_SIZE);
         // -------------- Rellenar store -------------
-        storage = ft_strjoin(storage, buffer);
+        buffer[bytes_read] = '\0';
+		storage = ft_strjoin(storage, buffer);
         // -------------------------------------------
 		if(ft_strchr(storage, '\n'))
 		{
 			xtraFunction(&storage, &buffer, &result);
-			printf("%s\n", result);
+			// printf("%s\n", result);
 		}
 	}
 	// if(ft_strchr(storage, '\n'))
@@ -183,7 +190,6 @@ char *get_next_line(int fd)
     return (result);
 }
 
-
 int main(void)
 {
     char path[] = "file.txt";
@@ -191,6 +197,9 @@ int main(void)
     char	*str;
 	// printf("%s", get_next_line(fd));
     str = get_next_line(fd);
+	printf("%s\n", str);
+	free(str);
+	str = get_next_line(fd);
 	printf("%s\n", str);
 	free(str);
 	//get_next_line(fd);
