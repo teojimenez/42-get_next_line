@@ -92,7 +92,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return ((char *)sub);
 }
 
-void xtraFunction(char **storage, char **buffer, char **result)
+void xtraFunction(char **storage, char *buffer, char **result)
 {
 		int i = 0;
 		while ((*storage)[i] != '\n')
@@ -112,19 +112,19 @@ void xtraFunction(char **storage, char **buffer, char **result)
 		// no necesitamos storage a no ser que haya algo en buffer despues del \n
 		
 		i = 0;
-		if ((*buffer)[i] != '\n' || (*buffer)[i] != '\0')
+		if (buffer[i] != '\n' || buffer[i] != '\0')
 		{
-			while ((*buffer)[i] != '\n' || (*buffer)[i] != '\n')
+			while (buffer[i] != '\n' || buffer[i] != '\n')
 				i++;
 			i++;
 		}
 		
 		(*storage) = 0;
-		int buff_len = ft_strlen(*(buffer));
+		int buff_len = ft_strlen(buffer);
 
 		//caso en que hay mas cosas despues del buffer
 		if (buff_len > i)
-			*(storage) = ft_substr(*(buffer), i, buff_len - 1);
+			*(storage) = ft_substr(buffer, i, buff_len - 1);
 }
 
 char	*ft_strdup(const char *s1)
@@ -145,30 +145,97 @@ char	*ft_strdup(const char *s1)
 char *get_next_line(int fd)
 {
     static char *storage = NULL;
-    char *buffer;
+    char buffer[BUFFER_SIZE];
 	char *result;
 	size_t bytes_read = 0;
-    buffer = (char*)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 
-	//cuando queremos leer?????
+	bytes_read = read(fd, buffer, BUFFER_SIZE);
+	if (bytes_read == 0)
+		return NULL;
+	storage = ft_strjoin(storage, buffer);
+	
+	if (ft_strchr(storage, '\n'))
+		xtraFunction(&storage, buffer, &result);
+
 	while(!ft_strchr(buffer, '\n')) 
 	{
         bytes_read = read(fd, buffer, BUFFER_SIZE);
 		// -------------- Rellenar/Actualizar store -------------
-		buffer[bytes_read] = '\0';
+		// buffer[bytes_read] = '\0';
 		storage = ft_strjoin(storage, buffer);
+		if(!storage)
+		{
+			free(storage);
+			return NULL;
+		}
         // -------------------------------------------
 		if (bytes_read == 0)
 		{
 			result = ft_strdup(storage);
-			break;
+			if(!result)
+			{
+				free(result);
+				return NULL;
+			}
+			break; 
 			//free(*storage);
 			//*storage = NULL;
 		}
 		else if(ft_strchr(storage, '\n')) //
-			xtraFunction(&storage, &buffer, &result);
+			xtraFunction(&storage, buffer, &result);
 	}
     return (result);
 }
 
-ukfoufggjkgjkhsaghkjafhlks
+// char *get_next_line(int fd)
+// {
+//     static char *storage = NULL;
+//     char buffer[BUFFER_SIZE];
+//     char *result = NULL;
+//     size_t bytes_read = 0;
+
+//     bytes_read = read(fd, buffer, BUFFER_SIZE);
+// 	buffer[bytes_read] = '\0';
+//     if (bytes_read == 0)
+//         return NULL;
+//     storage = ft_strjoin(storage, buffer);
+
+//     while (!ft_strchr(buffer, '\n'))
+//     {
+//         bytes_read = read(fd, buffer, BUFFER_SIZE);
+// 		buffer[bytes_read] = '\0';
+//         //ultimo caso cuando es el final de la linea
+//         if (bytes_read == 0)
+//         {
+//             result = ft_strdup(storage);
+//             break;
+//         }
+
+//         storage = ft_strjoin(storage, buffer);
+//         if (!storage)
+//             return NULL;
+//         //caso cuando encuentra \n.
+//         if (ft_strchr(storage, '\n'))
+//             xtraFunction(&storage, buffer, &result);
+//     }
+//     //caso de que ya en el primer buffer hay \n
+//     if (!result && ft_strchr(buffer, '\n'))
+//         xtraFunction(&storage, buffer, &result);
+//     return result;
+// }
+
+int main(void)
+{
+    char path[] = "file.txt";
+    int fd = open(path, O_RDONLY);
+    char	*str;
+	// printf("%s", get_next_line(fd));
+    str = get_next_line(fd);
+	printf("%s\n", str);
+	free(str);
+	str = get_next_line(fd);
+	printf("%s\n", str);
+	free(str);
+
+	//get_next_line(fd);
+}
