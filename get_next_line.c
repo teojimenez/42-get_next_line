@@ -94,11 +94,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 void xtraFunction(char **storage, char **buffer, char **result)
 {
-	
-	
-	// if(ft_strchr(storage, '\n'))
-	// {
-		// -------------- Rellenar result -------------
 		int i = 0;
 		while ((*storage)[i] != '\n')
 			i++;
@@ -130,11 +125,21 @@ void xtraFunction(char **storage, char **buffer, char **result)
 		//caso en que hay mas cosas despues del buffer
 		if (buff_len > i)
 			*(storage) = ft_substr(*(buffer), i, buff_len - 1);
-	// }
-	// else //no se ha leido lo suficiente y hace falta volver a hacer read
-	// {
-		
-	// }
+}
+
+char	*ft_strdup(const char *s1)
+{
+	char	*memory;
+	int		i;
+
+	i = -1;
+	memory = (char *)malloc(ft_strlen(s1) + 1);
+	if (!memory)
+		return (NULL);
+	while (s1[++i])
+		memory[i] = s1[i];
+	memory[i] = '\0';
+	return (memory);
 }
 
 char *get_next_line(int fd)
@@ -149,60 +154,21 @@ char *get_next_line(int fd)
 	while(!ft_strchr(buffer, '\n')) 
 	{
         bytes_read = read(fd, buffer, BUFFER_SIZE);
-        // -------------- Rellenar store -------------
-        buffer[bytes_read] = '\0';
+		// -------------- Rellenar/Actualizar store -------------
+		buffer[bytes_read] = '\0';
 		storage = ft_strjoin(storage, buffer);
         // -------------------------------------------
-		if(ft_strchr(storage, '\n'))
+		if (bytes_read == 0)
 		{
-			xtraFunction(&storage, &buffer, &result);
-			// printf("%s\n", result);
+			result = ft_strdup(storage);
+			break;
+			//free(*storage);
+			//*storage = NULL;
 		}
+		else if(ft_strchr(storage, '\n')) //
+			xtraFunction(&storage, &buffer, &result);
 	}
-	// if(ft_strchr(storage, '\n'))
-	// {
-	// 	// -------------- Rellenar result -------------
-	// 	int i = 0;
-	// 	while (buffer[i] != '\n')
-	// 		i++;
-	// 	i++;
-	// 	result = (char *)malloc((i + 1) * sizeof(char));
-	// 	int j = 0;
-	// 	while(j < i)
-	// 	{
-	// 		result[j] = buffer[j];
-	// 		j++;
-	// 	}
-	// 	result[j] = '\0';
-	// 	// ---------------------------------------------
-	// 	// ----- Rellenar storage con lo sobrante ------
-	// 	while(buffer[i] != '\0')
-	// 		i++;
-	// 	storage = 0;
-	// 	int ft_len = i - j;
-	// 	storage = ft_substr(buffer, i, ft_len);
-	// }
-	// else //no se ha leido lo suficiente y hace falta volver a hacer read
-
-
-    // if(read == -1)
-        //error liberar buffer y todo lo usado
     return (result);
 }
 
-int main(void)
-{
-    char path[] = "file.txt";
-    int fd = open(path, O_RDONLY);
-    char	*str;
-	// printf("%s", get_next_line(fd));
-    str = get_next_line(fd);
-	printf("%s\n", str);
-	free(str);
-	str = get_next_line(fd);
-	printf("%s\n", str);
-	free(str);
-	//get_next_line(fd);
-	//printf("%s\n", str);
-	//free(str);
-}
+ukfoufggjkgjkhsaghkjafhlks
