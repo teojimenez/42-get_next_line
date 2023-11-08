@@ -101,16 +101,18 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 void xtraFunction(char **storage, char *buffer, char **result)
 {
 		int i = 0;
+		//tamaño de result, desde storage
 		while ((*storage)[i] != '\n')
 			i++;
 		i++;
 		*(result) = (char *)malloc((i + 1) * sizeof(char));
-		if(!result)
+		if(!(*result))
 		{
-			free(result);
+			free(*result);
 			return ;
 		}
 		int j = 0;
+		//rellenar result con storage
 		while (j < i)
 		{
 			(*result)[j] = (*storage)[j];
@@ -122,20 +124,22 @@ void xtraFunction(char **storage, char *buffer, char **result)
 		// aqui result rellenado entero
 		// no necesitamos storage a no ser que haya algo en buffer despues del \n
 		
-		i = 0;
-		if (buffer[i] != '\n' || buffer[i] != '\0')
-		{
-			while (buffer[i] != '\n' || buffer[i] != '\n')
-				i++;
-			i++;
-		}
-		
-		(*storage) = 0;
+		// i = 0;
+		// if (buffer[i] != '\n' && buffer[i] != '\0')
+		// {
+		// 	while (buffer[i] != '\n' && buffer[i] != '\n')
+		// 		i++;
+		// 	i++;
+		// }
+		//storage debe ser storage pero sin lo de buffer
+		// free(*storage);
+		// (*storage) = 0;
 		int buff_len = ft_strlen(buffer);
 
 		//caso en que hay mas cosas despues del buffer
-		if (buff_len > i)
-			*(storage) = ft_substr(buffer, i, buff_len - 1);
+		// if (buff_len > i)
+		int len = ft_strlen(*(storage)) - i;
+		*(storage) = ft_substr(*(storage), i, len);
 }
 
 char	*ft_strdup(const char *s1)
@@ -164,7 +168,7 @@ char *get_next_line(int fd)
 	size_t bytes_read = 0;
     buffer = (char*)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	bytes_read = read(fd, buffer, BUFFER_SIZE);
-	if (bytes_read < 0)
+	if (bytes_read <= 0)
 	{
 		free(storage);
 		return NULL;
@@ -175,7 +179,7 @@ char *get_next_line(int fd)
 		xtraFunction(&storage, buffer, &result);
 
 	//cuando queremos leer?????
-	while(!ft_strchr(buffer, '\n')) 
+	while(!ft_strchr(buffer, '\n') && bytes_read > 0) 
 	{
         bytes_read = read(fd, buffer, BUFFER_SIZE);
 		// -------------- Rellenar/Actualizar store -------------
@@ -192,7 +196,8 @@ char *get_next_line(int fd)
 		else if(ft_strchr(storage, '\n')) //
 			xtraFunction(&storage, buffer, &result);
 	}
-    return (result);
+    free(buffer);
+	return (result);
 }
 
 // char *get_next_line(int fd)
@@ -275,17 +280,21 @@ char *get_next_line(int fd)
 int main()
 {
     int fd = open("file.txt", O_RDONLY);
-    if (!fd)
+    if (fd < 0)
         return (0);
 	char	*str;
 	int i = 0;
 	while(i < 50)
 	{
 		str = get_next_line(fd);
-		printf("%s", str);
-		free(str);
-		i++;
+        if (!str)
+            break;
+        printf("%s", str);
+        free(str);
+        i++;
 	}
+	close(fd);
+    return 0;
     // while (s != NULL)
     // {
     //     printf("%s", s);
