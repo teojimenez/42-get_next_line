@@ -160,13 +160,45 @@ char	*ft_strdup(const char *s1)
 	return (memory);
 }
 
+char *ft_read(char *storage)
+{
+	/*
+	CREO UN BUFFER Y LEO LA CANTIDAD QUE ME DAN DEL BUFFER SIZE
+	N VECES HASTA QUE TENGA UN BARRA N COMO MINIMO EN EL BUFFER
+	READ()
+	*/
+}
+
+/*
+	hola como 
+	estas
+	soy
+*/
+
 char *get_next_line(int fd)
 {
     static char *storage = NULL;
     char *buffer;
 	char *result;
 	size_t bytes_read = 0;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	if (!storage || (storage && !ft_strchr(storage, '\n'))) //caso storage primera iteracion, y storage tiene contenido pero no es barra \n
+		storage = ft_read();//read()
+	if (!storage)
+		return (NULL);
+	//siempre lees del storage pero no nunca lo llenas
+	//funcion  
+	// ex
+
     buffer = (char*)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+	{
+		free(storage);
+		return (NULL);
+	}
+	
 	bytes_read = read(fd, buffer, BUFFER_SIZE);
 	if (bytes_read <= 0)
 	{
@@ -181,7 +213,8 @@ char *get_next_line(int fd)
 	//cuando queremos leer?????
 	while(!ft_strchr(buffer, '\n') && bytes_read > 0) 
 	{
-        bytes_read = read(fd, buffer, BUFFER_SIZE);
+        
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		// -------------- Rellenar/Actualizar store -------------
 		buffer[bytes_read] = '\0';
 		storage = ft_strjoin(storage, buffer);
