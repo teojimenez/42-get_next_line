@@ -373,12 +373,12 @@ char *get_next_line(int fd)
 
 int main()
 {
-    int fd = open("tests/file3.txt", O_RDONLY);
+    int fd = open("tests/file2.txt", O_RDONLY);
     if (fd < 0)
         return (0);
 	char	*str;
 	int i = 0;
-	while(i < 1)
+	while(i < 15287)
 	{
 		str = get_next_line(fd);
         if (!str)
