@@ -45,29 +45,25 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (!s1)
 	{
 		s1 = (char *)malloc(1); //new
-		if(!s1)
-		{
-			// free(s1); //new
-			return NULL;
-		}
 		s1[0] = '\0';
+		if(!s1)
+			return (0);
+		// return (ft_free(&s1));
 	}
 	str = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1)  * sizeof(char));
-    // str[ft_strlen(s1) + ft_strlen(s2) + 1] = '\0';
 	if (!str)
-	{
-		free(s1); //new
-		return (0);
-	}
+		return (ft_free(&s1)); //new
 	result = str;
 	while (*s1)
 		*str++ = *s1++;
 	while (*s2)
 		*str++ = *s2++;
     *str = '\0';
-	// free(s1); //new
+	//free(s1); //peta da Abort
 	return (result);
 }
+
+
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
@@ -83,10 +79,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		len = ft_strlen(s) - start;
 	sub = malloc(len + 1 * sizeof(char));
 	if(!sub)
-	{
-		free(sub);
-		return NULL;
-	}
+		return (ft_free(&sub));
 	while (i < len && s[start])
 		sub[i++] = s[start++];
 	sub[i] = '\0';	

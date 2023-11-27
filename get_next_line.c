@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-char	*free_str(char **str)
+char	*ft_free(char **str)
 {
 	free(*str);
 	(*str) = NULL;
@@ -45,7 +45,7 @@ void xtraFunction(char **storage, char **result)
 		{
 			*(storage) = ft_substr(*(storage), i, len);
 			if (!storage)
-				free_str(storage);
+				ft_free(storage);
 		}
 		else
 			*(storage) = "";
@@ -77,31 +77,47 @@ void xtraFunction(char **storage, char **result)
 char *ft_read_real(char **storage, char *buffer, int bytes_read, int fd, char **result)
 {
 	buffer = (char*)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (!buffer)
-			free_str(storage);
-		buffer[0] = '\0';
-		bytes_read = 1;
-		while(!*(storage) || ((*(storage) && !ft_strchr(*(storage), '\n')) && bytes_read > 0))
-		{
-			bytes_read = read(fd, buffer, BUFFER_SIZE);
-			buffer[bytes_read] = '\0';
+	if (!buffer)
+		return  (ft_free(storage));
+	buffer[0] = '\0';
+	bytes_read = 1;
+	while(!*(storage) || ((*(storage) && !ft_strchr(*(storage), '\n')) && bytes_read > 0))
+	{
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		buffer[bytes_read] = '\0';
 
-			*(storage) = ft_strjoin(*(storage), buffer);
-			if (!storage)
-				free_str(storage);
-			// -------------------------------------------
-			if(ft_strchr(*(storage), '\n')) //
-			{
-				xtraFunction(storage, result);
-				break;
-			}
+		*(storage) = ft_strjoin(*(storage), buffer);
+		if (!storage)
+			return (ft_free(storage));
+		// -------------------------------------------
+		if(ft_strchr(*(storage), '\n')) //
+		{
+			xtraFunction(storage, result);
+			break;
 		}
-		if (bytes_read == 0)
+	}
+	// if (bytes_read == 0)
+	// {
+	// 	*(result) = ft_strdup(*(storage));
+	// }
+	if (bytes_read == 0)
+	{
+		if (!*(storage))
+		{
+			*(result) = ft_strdup("");
+			if(!*(result))
+				ft_free(storage);
+		}
+		else
 		{
 			*(result) = ft_strdup(*(storage));
-		}
+			if(!*(result))
+				ft_free(storage);
 
-		return *(result);
+		}
+	}
+
+	return *(result);
 }
 
 char *get_next_line(int fd)
@@ -117,7 +133,7 @@ char *get_next_line(int fd)
 	if (!storage || (storage && !ft_strchr(storage, '\n'))) //caso storage primera iteracion, y storage tiene contenido pero no es barra \n, y ultimo donde bytes read es 0
 		ft_read_real(&storage, buffer, bytes_read, fd, &result);
 	if (!storage)
-        return (free_str(buffer));
+        return (ft_free(&buffer));
 	if (storage && ft_strchr(storage, '\n')) //caso hay \n en storage y hay que leer storage y devolver
 	{
 		xtraFunction(&storage, &result);
