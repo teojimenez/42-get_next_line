@@ -20,7 +20,7 @@
 #include "get_next_line.h" 
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10000000
+#  define BUFFER_SIZE 10
 # endif
 
 
@@ -30,7 +30,6 @@ char	*ft_strchr(const char *str, int c);
 char	*ft_strjoin(char *s1, char *s2);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strdup(const char *s1);
-char	*ft_free(char **str);
-
+char	*free_str(char **str);
 
 #endif

@@ -35,34 +35,70 @@ char	*ft_strchr(const char *str, int c)
 			return ((char *)&str[i]);
 		i++;
 	}
-	return (0);
+	return (NULL);
+}
+
+// char	*ft_strjoin(char *s1, char *s2)
+// {
+// 	char	*str;
+// 	char	* result;
+// 	if (!s1)
+// 	{
+// 		s1 = (char *)malloc(1); //new
+// 		s1[0] = '\0';
+// 		if(!s1)
+// 			return (0);
+// 		// return (ft_free(&s1));
+// 	}
+// 	str = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1)  * sizeof(char));
+// 	if (!str)
+// 		return (free_str(&s1)); //new
+// 	result = str;
+// 	while (*s1)
+// 		*str++ = *s1++;
+// 	while (*s2)
+// 		*str++ = *s2++;
+//     *str = '\0';
+// 	free(s1); //peta da Abort
+// 	return (result);
+// }
+
+static char	*get_strjoin(char *s1, char *s2, size_t len_s1, size_t len_s2)
+{
+	int		i;
+	int		j;
+	char	*new_str;
+
+	new_str = (char *)malloc(len_s1 + len_s2 + 1);
+	if (!new_str)
+		return (free_str(&s1));
+	i = -1;
+	j = 0;
+	while (s1[++i])
+		new_str[i] = s1[i];
+	while (s2[j])
+		new_str[i++] = s2[j++];
+	new_str[len_s1 + len_s2] = '\0';
+	free(s1);
+	return (new_str);
 }
 
 char	*ft_strjoin(char *s1, char *s2)
 {
-	char	*str;
-	char	* result;
+	size_t	len_s1;
+	size_t	len_s2;
+
 	if (!s1)
 	{
-		s1 = (char *)malloc(1); //new
+		s1 = (char *)malloc(1);
+		if (!s1)
+			return (NULL);
 		s1[0] = '\0';
-		if(!s1)
-			return (0);
-		// return (ft_free(&s1));
 	}
-	str = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1)  * sizeof(char));
-	if (!str)
-		return (ft_free(&s1)); //new
-	result = str;
-	while (*s1)
-		*str++ = *s1++;
-	while (*s2)
-		*str++ = *s2++;
-    *str = '\0';
-	//free(s1); //peta da Abort
-	return (result);
+	len_s1 = ft_strlen(s1);
+	len_s2 = ft_strlen(s2);
+	return (get_strjoin(s1, s2, len_s1, len_s2));
 }
-
 
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
@@ -72,17 +108,19 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 	i = 0;
 	if (!s)
-		return (0);
-	// if (start > (unsigned int)ft_strlen(s))
-	// 	return (ft_strdup(""));
+		return (NULL);
 	if (len > ft_strlen(s) - start)
 		len = ft_strlen(s) - start;
 	sub = malloc(len + 1 * sizeof(char));
 	if(!sub)
-		return (ft_free(&sub));
+	{
+		free(sub);
+		return NULL;
+	}
 	while (i < len && s[start])
 		sub[i++] = s[start++];
 	sub[i] = '\0';	
+	free((char *)s);
 	return ((char *)sub);
 }
 
