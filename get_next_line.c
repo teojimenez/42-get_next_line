@@ -21,9 +21,16 @@ char	*free_str(char **str)
 
 char * xtraFunction(char **storage)
 {
-	char *result;
+	
+	char *result = NULL;
 	int i;
 	
+	if (*storage && !ft_strchr(*storage, '\n')) //caso hay \0
+	{
+        result = ft_strdup(*storage);
+        free_str(storage);
+		return result;
+    }
 	i = 0;
 	while ((*storage)[i] != '\n')
 		i++;
@@ -35,92 +42,67 @@ char * xtraFunction(char **storage)
 		result[j] = (*storage)[j];
 	result[j] = '\0';
 	int len = ft_strlen(*(storage)) - i;
-	if (len > 0)
-	{
+	// if (len > 0)
+	// {
 		*(storage) = ft_substr(*(storage), i, len);
 		if (!storage)
-			return (free_str(storage));
-	}
-	else
-		*(storage) = NULL;
+		{
+			free(storage);
+			return (NULL);
+		}
+		if (len < 0) //AQUI !!!!!!
+			*(storage) = NULL;
+	// }
+	// else
+	// 	 *(storage) = NULL;
+		//return(free_str(storage));
 	return result;
 }
 
-void ft_read_real(char **storage, int bytes_read, int fd)
+
+char *ft_read_real(char *storage, int fd)
 {
 	char *buffer = NULL;
+	int bytes_read;
 	buffer = (char*)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	buffer[0] = '\0';
+	if (!buffer)
+		return free_str(&storage);
+	// buffer[0] = '\0';
 	bytes_read = 1;
-	while((!*(storage) && bytes_read > 0) || ((*(storage) && !ft_strchr(*(storage), '\n')) && bytes_read > 0)) //working (MINE)
+	
+	while((!storage && bytes_read > 0) || ((storage && !ft_strchr(storage, '\n')) && bytes_read > 0)) //working (MINE)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read > 0)
 		{
 			buffer[bytes_read] = '\0';
-			*(storage) = ft_strjoin(*(storage), buffer);
+			storage = ft_strjoin(storage, buffer);
 			if (!storage)
-			{
-				return(free(buffer));
-			}
+				return(free_str(&buffer));
 		}
 	}
-	free(buffer);
 	if (bytes_read == -1)
-		free_str(storage);
+		free_str(&storage);
+	free(buffer);
+	return storage;
 }
 
 char *get_next_line(int fd)
 {
     static char *storage = NULL;
-	size_t bytes_read = 0;
+	char *line;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd,0,0) < 0) //read() -> no leas nada, deberia salir 0, si sale menor que 0 es que hay un error
 	{
 		free(storage);
 		return (NULL);
 	}
-	if (!storage || (storage && !ft_strchr(storage, '\n'))) //caso storage primera iteracion, y storage tiene contenido pero no es barra \n, y ultimo donde bytes read es 0
-		ft_read_real(&storage, bytes_read, fd);
+	storage = ft_read_real(storage, fd);
 	if (!storage) //caso line empty
-	{
-		storage = NULL;
-		return (NULL);
-	}
-	if (storage && ft_strchr(storage, '\n')) //caso hay \n en storage y hay que leer storage y devolver
-	{
-		return (xtraFunction(&storage));
-	}
-    if (storage) //caso last line ('\0')
-    {
-        char *result = ft_strdup(storage);
-        free_str(&storage);
-		return result;
-    }
-	return (NULL);
+		return (storage = NULL);
+
+	line = xtraFunction(&storage);
+
+	if (!line)
+		return (free_str(&storage));
+	return (line);
 }
-
-
-// int	main(void)
-// {
-// 	int		file_descriptor;
-// 	char	*result;
-
-// 	file_descriptor = open("tests/test1.txt", O_RDONLY);
-// 	if (file_descriptor == -1)
-// 		return (0);
-// 	result = get_next_line(file_descriptor);
-// 	if (result == NULL)
-// 		return (0);
-// 	while (result != NULL)
-// 	{
-// 		printf("%s", result);
-// 		free(result);
-// 		result = NULL;
-// 		result = get_next_line(file_descriptor);
-// 		if (result == NULL)
-// 			return (0);
-// 	}
-// 	free(result);
-// 	result = NULL;
-// 	return (0);
-// }

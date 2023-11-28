@@ -42,14 +42,14 @@ char	*ft_strchr(const char *str, int c)
 // {
 // 	char	*str;
 // 	char	* result;
-// 	if (!s1)
+// 	if (!s1)//caso primer storage, que esta vacio
 // 	{
 // 		s1 = (char *)malloc(1); //new
 // 		s1[0] = '\0';
 // 		if(!s1)
 // 			return (0);
-// 		// return (ft_free(&s1));
 // 	}
+// 	char *copy_s1 = s1;
 // 	str = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1)  * sizeof(char));
 // 	if (!str)
 // 		return (free_str(&s1)); //new
@@ -59,7 +59,7 @@ char	*ft_strchr(const char *str, int c)
 // 	while (*s2)
 // 		*str++ = *s2++;
 //     *str = '\0';
-// 	free(s1); //peta da Abort
+// 	free(copy_s1); //peta da Abort
 // 	return (result);
 // }
 
@@ -101,7 +101,7 @@ char	*ft_strjoin(char *s1, char *s2)
 }
 
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_substr(char *s, unsigned int start, size_t len)
 {
 	char	*sub;
 	size_t	i;
@@ -120,7 +120,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	while (i < len && s[start])
 		sub[i++] = s[start++];
 	sub[i] = '\0';	
-	free((char *)s);
+	free(s);
 	return ((char *)sub);
 }
 
