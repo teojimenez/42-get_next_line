@@ -18,6 +18,7 @@ char	*free_str(char **str)
 	(*str) = NULL;
 	return (NULL);
 }
+#include <stdio.h>
 
 char * xtraFunction(char **storage)
 {
@@ -44,18 +45,20 @@ char * xtraFunction(char **storage)
 	int len = ft_strlen(*(storage)) - i;
 	// if (len > 0)
 	// {
-		*(storage) = ft_substr(*(storage), i, len);
-		if (!storage)
+		if (len <= 0 && ft_strlen(*(storage)) > 0) //AQUI !!!!!!
 		{
-			free(storage);
-			return (NULL);
-		}
-		if (len < 0) //AQUI !!!!!!
+			free(*storage);
 			*(storage) = NULL;
-	// }
-	// else
-	// 	 *(storage) = NULL;
-		//return(free_str(storage));
+			//printf("LEN: %i, STORAGE: %s", len, *(storage));
+			//free(storage);
+		}
+		else if(len > 0)
+		{
+			*(storage) = ft_substr(*(storage), i, len);
+			if (!storage)
+				return free_str(storage);
+
+		}
 	return result;
 }
 
@@ -101,7 +104,6 @@ char *get_next_line(int fd)
 		return (storage = NULL);
 
 	line = xtraFunction(&storage);
-
 	if (!line)
 		return (free_str(&storage));
 	return (line);
