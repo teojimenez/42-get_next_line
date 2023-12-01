@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: teojimen <teojimen@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/21 23:32:25 by teojimen          #+#    #+#             */
-/*   Updated: 2023/11/21 23:33:19 by teojimen         ###   ########.fr       */
+/*   Created: 2023/12/01 10:38:39 by teojimen          #+#    #+#             */
+/*   Updated: 2023/12/01 10:38:39 by teojimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include "get_next_line.h" 
+# include "get_next_line_bonus.h" 
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 10

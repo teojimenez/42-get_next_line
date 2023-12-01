@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: teojimen <teojimen@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/24 12:26:39 by teojimen          #+#    #+#             */
-/*   Updated: 2023/10/24 12:26:39 by teojimen         ###   ########.fr       */
+/*   Created: 2023/12/01 10:38:35 by teojimen          #+#    #+#             */
+/*   Updated: 2023/12/01 10:38:35 by teojimen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*free_str(char **str)
 {
@@ -95,20 +95,20 @@ char	*ft_read(char *storage, int fd)
 
 char	*get_next_line(int fd)
 {
-	static char	*storage = NULL;
+	static char	*storage[1025] = {NULL};
 	char		*line;
 
 	line = NULL;
-	if ((fd < 0) || BUFFER_SIZE <= 0)
+	if ((fd < 0 || fd > 1024) || BUFFER_SIZE <= 0)
 	{
-		free(storage);
+		free(storage[fd]);
 		return (NULL);
 	}
-	storage = ft_read(storage, fd);
-	if (!storage)
-		return (storage = NULL);
-	line = ft_line(&storage);
+	storage[fd] = ft_read(storage[fd], fd);
+	if (!storage[fd])
+		return (storage[fd] = NULL);
+	line = ft_line(&storage[fd]);
 	if (!line)
-		return (free_str(&storage));
+		return (free_str(&storage[fd]));
 	return (line);
 }
